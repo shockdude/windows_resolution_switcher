@@ -3,6 +3,7 @@ import multiprocessing as mp
 import platform
 from contextlib import suppress
 from functools import lru_cache
+from windows_toasts import Toast, WindowsToaster
 
 import pystray
 from PIL import Image
@@ -10,7 +11,7 @@ from pystray import MenuItem as item
 
 # for cross platform https://stackoverflow.com/a/20996948/7732434?
 
-CHANGE_DPI_SCALE = True
+CHANGE_DPI_SCALE = False
 MENU_SHOW_HEIGHT = False
 
 
@@ -158,12 +159,16 @@ def calc_dpi_scale(new_w, _):
     return dpi_scale
 
 
-def set_resolution(width: int, height: int, dpi_scale: int, refresh_rate: int = None):
+def set_resolution(width: int = None, height: int = None, dpi_scale: int = None, refresh_rate: int = None):
     if platform.system() == 'Windows':
         # adapted from Peter Wood: https://stackoverflow.com/a/54262365
         devmode = pywintypes.DEVMODEType()
-        devmode.PelsWidth = width
-        devmode.PelsHeight = height
+        if width:
+            devmode.PelsWidth = width
+        if height:
+            devmode.PelsHeight = height
+        if not dpi_scale:
+            dpi_scale = get_initial_dpi_scale()
         devmode.Fields = win32con.DM_PELSWIDTH | win32con.DM_PELSHEIGHT
         if refresh_rate:
             devmode.DisplayFrequency = refresh_rate
@@ -180,11 +185,15 @@ def set_resolution(width: int, height: int, dpi_scale: int, refresh_rate: int = 
                 # dpi of 1 -> 0 - 1 = rel index of -1
                 rel_idx = dpi_vals_map[dpi_scale] - ref_idx
                 ctypes.windll.user32.SystemParametersInfoA(0x009F, rel_idx, 0, 1)
+                
+    toaster = WindowsToaster('Resolution Switcher')
+    newToast = Toast()
+    newToast.text_fields = ['Refresh Rate changed to {}Hz'.format(devmode.DisplayFrequency)]
+    toaster.show_toast(newToast)
 
-
-def set_res_curry(width, height, dpi_scale):
+def set_res_curry(width, height, dpi_scale, refresh_rate = None):
     # ensure correct values are used when lambda executes
-    return lambda: set_resolution(width, height, dpi_scale)
+    return lambda: set_resolution(width, height, dpi_scale, refresh_rate)
 
 
 def fmt_res(width, height, show_width=False):
@@ -202,7 +211,8 @@ if __name__ == '__main__':
     # save cache
     get_initial_dpi_scale()
     image = Image.open('icon.png')
-    menu = [item(k, set_res_curry(v['w'], v['h'], v['dpi_scale'])) for k, v in get_all_resolutions().items()]
+    # menu = [item(k, set_res_curry(v['w'], v['h'], v['dpi_scale'])) for k, v in get_all_resolutions().items()]
+    menu = [item("165Hz", set_res_curry(None, None, None, 165)), item("120Hz", set_res_curry(None, None, None, 120))]
     menu.append(item('Exit', on_exit))
     icon = pystray.Icon('Resolution Switcher', image, 'Resolution Switcher', menu)
     icon.run()
