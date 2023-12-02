@@ -2,6 +2,12 @@
 
 This short Python script allows you to easily switch the resolution of your main monitor from the Windows 10/11 system tray.
 
+This fork includes personal customizations, and is hosted on Github because why not.
+* 120Hz vs 165Hz refresh rate switching only
+* Show a notification toast after refresh rate switch
+
+Also I didn't use venv or the included VBS and BAT. I just made a shortcut to `pythonw.exe` with the path to `resolution_switcher.py` as the argument, and put the shortcut in shell:startup.
+
 ## Setup Video
 
 <a href="https://youtu.be/Vrg4RhjxztE">
