@@ -212,7 +212,7 @@ if __name__ == '__main__':
     get_initial_dpi_scale()
     image = Image.open('icon.png')
     # menu = [item(k, set_res_curry(v['w'], v['h'], v['dpi_scale'])) for k, v in get_all_resolutions().items()]
-    menu = [item("165Hz", set_res_curry(None, None, None, 165)), item("120Hz", set_res_curry(None, None, None, 120))]
+    menu = [item("60Hz", set_res_curry(None, None, None, 60)), item("120Hz", set_res_curry(None, None, None, 120)), item("165Hz", set_res_curry(None, None, None, 165))]
     menu.append(item('Exit', on_exit))
     icon = pystray.Icon('Resolution Switcher', image, 'Resolution Switcher', menu)
     icon.run()
