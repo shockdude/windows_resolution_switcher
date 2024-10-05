@@ -167,9 +167,10 @@ def set_resolution(width: int = None, height: int = None, dpi_scale: int = None,
             devmode.PelsWidth = width
         if height:
             devmode.PelsHeight = height
-        if not dpi_scale:
-            dpi_scale = get_initial_dpi_scale()
-        devmode.Fields = win32con.DM_PELSWIDTH | win32con.DM_PELSHEIGHT
+        if width or height:
+            if not dpi_scale:
+                dpi_scale = get_initial_dpi_scale()
+            devmode.Fields = win32con.DM_PELSWIDTH | win32con.DM_PELSHEIGHT
         if refresh_rate:
             devmode.DisplayFrequency = refresh_rate
             devmode.Fields |= win32con.DM_DISPLAYFREQUENCY
@@ -212,7 +213,7 @@ if __name__ == '__main__':
     get_initial_dpi_scale()
     image = Image.open('icon.png')
     # menu = [item(k, set_res_curry(v['w'], v['h'], v['dpi_scale'])) for k, v in get_all_resolutions().items()]
-    menu = [item("60Hz", set_res_curry(None, None, None, 60)), item("120Hz", set_res_curry(None, None, None, 120)), item("165Hz", set_res_curry(None, None, None, 165))]
+    menu = [item("60Hz", set_res_curry(None, None, None, 60)), item("120Hz", set_res_curry(None, None, None, 120)), item("144Hz", set_res_curry(None, None, None, 144)), item("165Hz", set_res_curry(None, None, None, 165))]
     menu.append(item('Exit', on_exit))
     icon = pystray.Icon('Resolution Switcher', image, 'Resolution Switcher', menu)
     icon.run()
