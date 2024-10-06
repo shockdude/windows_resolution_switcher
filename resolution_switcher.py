@@ -189,7 +189,10 @@ def set_resolution(width: int = None, height: int = None, dpi_scale: int = None,
                 
     toaster = WindowsToaster('Resolution Switcher')
     newToast = Toast()
-    newToast.text_fields = ['Refresh Rate changed to {}Hz'.format(devmode.DisplayFrequency)]
+    if width and height:
+        newToast.text_fields = ['Resolution changed to {}x{}'.format(devmode.PelsWidth, devmode.PelsHeight)]
+    if refresh_rate:
+        newToast.text_fields = ['Refresh Rate changed to {}Hz'.format(devmode.DisplayFrequency)]
     toaster.show_toast(newToast)
 
 def set_res_curry(width, height, dpi_scale, refresh_rate = None):
@@ -213,7 +216,7 @@ if __name__ == '__main__':
     get_initial_dpi_scale()
     image = Image.open('icon.png')
     # menu = [item(k, set_res_curry(v['w'], v['h'], v['dpi_scale'])) for k, v in get_all_resolutions().items()]
-    menu = [item("60Hz", set_res_curry(None, None, None, 60)), item("120Hz", set_res_curry(None, None, None, 120)), item("144Hz", set_res_curry(None, None, None, 144)), item("165Hz", set_res_curry(None, None, None, 165))]
+    menu = [item("1440p", set_res_curry(2560, 1440, None, None)), item("1600p", set_res_curry(2560, 1600, None, None)), item("60Hz", set_res_curry(None, None, None, 60)), item("120Hz", set_res_curry(None, None, None, 120)), item("144Hz", set_res_curry(None, None, None, 144)), item("165Hz", set_res_curry(None, None, None, 165))]
     menu.append(item('Exit', on_exit))
     icon = pystray.Icon('Resolution Switcher', image, 'Resolution Switcher', menu)
     icon.run()
