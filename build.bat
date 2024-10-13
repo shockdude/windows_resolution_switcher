@@ -1,0 +1,1 @@
+pyinstaller --icon "icon.ico" --add-data "icon.png:." --onefile .\resolution_switcher.pyw

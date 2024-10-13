@@ -4,6 +4,7 @@ import platform
 from contextlib import suppress
 from functools import lru_cache
 from windows_toasts import Toast, WindowsToaster
+from os import path
 
 import pystray
 from PIL import Image
@@ -214,7 +215,8 @@ if __name__ == '__main__':
     mp.freeze_support()
     # save cache
     get_initial_dpi_scale()
-    image = Image.open('icon.png')
+    bundle_dir = path.abspath(path.dirname(__file__))
+    image = Image.open(path.join(bundle_dir, 'icon.png'))
     # menu = [item(k, set_res_curry(v['w'], v['h'], v['dpi_scale'])) for k, v in get_all_resolutions().items()]
     menu = [item("1440p", set_res_curry(2560, 1440, None, None)), item("1600p", set_res_curry(2560, 1600, None, None)), item("60Hz", set_res_curry(None, None, None, 60)), item("120Hz", set_res_curry(None, None, None, 120)), item("144Hz", set_res_curry(None, None, None, 144)), item("165Hz", set_res_curry(None, None, None, 165))]
     menu.append(item('Exit', on_exit))
